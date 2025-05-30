@@ -20,7 +20,11 @@ import { request as __request } from '../core/request';
     providedIn: 'root',
 })
 export class UsuarioControllerService {
-    constructor(public readonly http: HttpClient) {}
+    private authToken: string | null;
+
+    constructor(public readonly http: HttpClient) {
+        this.authToken = localStorage.getItem('authToken');
+    }
     /**
      * @param id
      * @returns UsuarioDto OK
@@ -55,6 +59,9 @@ export class UsuarioControllerService {
             },
             body: requestBody,
             mediaType: 'application/json',
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -71,6 +78,9 @@ export class UsuarioControllerService {
             path: {
                 'id': id,
             },
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -81,12 +91,19 @@ export class UsuarioControllerService {
     public getAllUsers(
         pageable: Pageable,
     ): Observable<PageUsuarioDto> {
+        console.log(this.authToken, "token de accesso")
         return __request(OpenAPI, this.http, {
             method: 'GET',
             url: '/g5/api/v1/usuario',
             query: {
-                'pageable': pageable,
+                'page': pageable.page,
+                'size': pageable.size,
+                // 'sort': pageable.sort
             },
+            mediaType: 'application/json',
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -102,6 +119,9 @@ export class UsuarioControllerService {
             url: '/g5/api/v1/usuario',
             body: requestBody,
             mediaType: 'application/json',
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -117,6 +137,9 @@ export class UsuarioControllerService {
             url: '/g5/api/v1/usuario/filter',
             body: requestBody,
             mediaType: 'application/json',
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -133,6 +156,9 @@ export class UsuarioControllerService {
             path: {
                 'id': id,
             },
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -149,6 +175,9 @@ export class UsuarioControllerService {
             path: {
                 'id': id,
             },
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
     /**
@@ -165,6 +194,9 @@ export class UsuarioControllerService {
             path: {
                 'id': id,
             },
+            headers:{
+                "Authorization": "Bearer " + this.authToken
+            }
         });
     }
 }
