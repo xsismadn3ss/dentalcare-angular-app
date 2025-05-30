@@ -1,0 +1,53 @@
+<div class="user-list-container">
+  <h2>Lista de Usuarios</h2>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Opcional: Botón para crear nuevo usuario -->
+  <!-- <div class="mb-3">
+    <a routerLink="/users/new" class="btn btn-success">Crear Nuevo Usuario</a>
+  </div> -->
+
+  <div *ngIf="users$ | async as users; else loading">
+    <table class="table table-striped" *ngIf="users.length > 0; else noUsers">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre de Usuario</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <!-- <td>{{ user.rol?.nombreRol }}</td> Asumiendo que tienes el objeto Rol anidado y quieres mostrar su nombre -->
+          <td>
+            <!-- Opcional: Enlace para editar usuario -->
+            <!-- <a [routerLink]="['/users/edit', user.id]" class="btn btn-sm btn-primary mr-1">Editar</a> -->
+            <button (click)="deleteUser(user.id)" class="btn btn-sm btn-danger">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noUsers>
+      <p>No hay usuarios para mostrar.</p>
+    </ng-template>
+  </div>
+
+  <ng-template #loading>
+    <p>Cargando usuarios...</p>
+    <!-- Opcional: Puedes poner un spinner aquí -->
+    <!-- <div class="spinner-border" role="status">
+      <span class="sr-only">Cargando...</span>
+    </div> -->
+  </ng-template>
+</div>

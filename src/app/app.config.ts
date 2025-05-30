@@ -1,9 +1,24 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; // Importa HTTP_INTERCEPTORS
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { AuthService } from './core/auth/auth.service';
+import { UsuarioControllerService } from './core/services';
+// Si tuvieras un interceptor, lo importarías aquí, por ejemplo:
+// import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay())]
+  providers: [
+    provideRouter(routes),
+    importProvidersFrom(HttpClientModule), // Necesario para los servicios HTTP generados y AuthService
+    AuthService,                          // Proveedor para AuthService
+    UsuarioControllerService,             // Proveedor para UsuarioControllerService
+    // Si tuvieras un interceptor, lo añadirías así:
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthInterceptor,
+    //   multi: true,
+    // },
+  ]
 };
