@@ -141,7 +141,7 @@ export const resolve = async <T>(options: ApiRequestOptions, resolver?: T | Reso
 };
 
 export const getHeaders = (config: OpenAPIConfig, options: ApiRequestOptions): Observable<HttpHeaders> => {
-    return forkJoin({
+    return forkJoin({ 
         token: resolve(options, config.TOKEN),
         username: resolve(options, config.USERNAME),
         password: resolve(options, config.PASSWORD),
@@ -158,6 +158,11 @@ export const getHeaders = (config: OpenAPIConfig, options: ApiRequestOptions): O
                     ...headers,
                     [key]: String(value),
                 }), {} as Record<string, string>);
+            
+            const authToken = localStorage.getItem('authToken');
+            if (isStringWithValue(authToken)) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
 
             if (isStringWithValue(token)) {
                 headers['Authorization'] = `Bearer ${token}`;
