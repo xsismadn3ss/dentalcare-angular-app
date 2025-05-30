@@ -237,6 +237,12 @@ export const getResponseBody = <T>(response: HttpResponse<T>): T | undefined => 
     return undefined;
 };
 
+const updateAuthTokenFromHeaders = (response: HttpResponse<any>): void => {
+    const accessToken = response.headers.get('access');
+    if (accessToken) {
+        localStorage.setItem('authToken', accessToken);
+    }
+};
 export const catchErrorCodes = (options: ApiRequestOptions, result: ApiResult): void => {
     const errors: Record<number, string> = {
         400: 'Bad Request',
@@ -289,6 +295,7 @@ export const request = <T>(config: OpenAPIConfig, http: HttpClient, options: Api
             return sendRequest<T>(config, options, http, url, formData, body, headers);
         }),
         map(response => {
+            updateAuthTokenFromHeaders(response);
             const responseBody = getResponseBody(response);
             const responseHeader = getResponseHeader(response, options.responseHeader);
             return {
